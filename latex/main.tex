@@ -1,0 +1,97 @@
+\documentclass[10pt,reqno]{amsart}
+\usepackage{amssymb,version,graphicx,fancybox,pifont,color}
+\usepackage[notcite,notref]{showkeys}
+\usepackage{url,hyperref}
+% \usepackage{subfigure}
+\usepackage{subeqnarray}
+\usepackage{leftidx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{epstopdf}
+\usepackage{mathrsfs}
+% \usepackage{graphics}
+\usepackage{graphicx}
+
+
+\renewcommand{\div}{\nabla \cdot}
+\newcommand{\bu}{\bm{u}}
+
+\allowdisplaybreaks
+\setlength{\textwidth}{36pc}
+\setlength{\textheight}{50pc}
+
+\setlength{\oddsidemargin}{.5cm} \setlength{\evensidemargin}{.5cm}
+\numberwithin{equation}{section}
+\newtheorem{thm}{\bf Theorem}
+
+\usepackage{algorithm}
+\usepackage{pifont}
+\usepackage[noend]{algpseudocode}
+\algnewcommand{\Inputs}[1]{%
+  \State \textbf{Inputs:}
+  \Statex \hspace*{\algorithmicindent}\parbox[t]{.8\linewidth}{\raggedright #1}
+}
+
+% ----------------------------------------------------------------
+\begin{document}
+\title{Production workshop optimization}%
+
+
+\begin{abstract}
+In this paper, we propose a way to model and optimize the cost of production workshop.
+\end{abstract}
+ \maketitle
+ 
+\section{Mathematical modeling}\label{sec: model}
+\subsection{Notation and definition}
+Given a batch of order $b$, it will contain the size of this batch, a set of production process $S_b = \{s_{b_1}, s_{b_2}, \ldots, s_{b_n}\}$ and each prosess has an according standard processing time $t_{bs}$. Thus, given a set of $b$ as $\mathcal{B}$, we can obtain a set of all the production process $S_b$ as $\mathcal{S}=\bigcup\limits_{b\in\mathcal{B}} S_b = \{s_{1}, s_{2}, \ldots, s_{n}\}$.
+
+The first task is to assign these process to the workers fairly. For worker $w$, he/she can be described with parameters that\\
+(i)   The ability to complete the production process $s_i \in \mathcal{S}$ as $e_{ws}$.\\
+(ii)  The proficiency in completing the production process $s_i \in \mathcal{S}$ as $f_{ws}$.\\
+(iii) The limitation of the number of assigned production process as $M$.\\
+
+If we denote the production process set of worker $w$ as $S_w = \{s_{w_1}, s_{w_2}, \ldots, s_{w_n}\}$ and the according quantity as $Q_{s_w}$, then the total time cost will be
+\begin{equation}\label{cost_w}
+    T_w = \sum_{s_w\in S_w} Q_{s_w}*f_{ws}*t_{s_w},
+\end{equation}
+subject to 
+\begin{equation}\label{subject_w}
+    \sum_{s_w\in S_w} Q_{s_w} \leq M,
+\end{equation}
+and
+\begin{equation}\label{subjct_b}
+    \sum_{w\in\mathcal{W}}Q_{s_w} = \sum_{b\in\mathcal{B}}n_{bs}.
+\end{equation}
+Here, $n_{bs}$ is the number of process $s$ contained in batch $b$.
+
+To assign these process fairly and efficiently, we try to minimize the maximum of the time costs around workers that
+\begin{equation}\label{loss}
+    \min\max_{w\in\mathcal{W}}T_w.
+\end{equation}
+
+After this step, the assignment of the batch set $\mathcal{B}$ has been decided. The next step, we will assign the workers to the seru $c\in\mathcal{C}$ (workshop) efficiently. Assume we have the workers in seru $c$ as a set $W_c = \{w_{c_1}, w_{c_2}, \ldots, w_{c_n}\}$, then the labor time of seru $c$ will be 
+\begin{equation}\label{cost_c}
+    T_c = \sum_{w_c\in W_c} T_{w_c},
+\end{equation}
+subject to 
+\begin{equation}\label{subject_c}
+    \|W_c\| \leq N.
+\end{equation}
+And the total labor time will be
+\begin{equation}\label{total}
+    T_{total} = \sum_{c\in\mathcal{C}}T_c.
+\end{equation}
+\subsection{Integer Programming}
+Follow previous definition, we have three variables that\\
+(i)   The assignment of process $s$ from the batch $b$ to the worker $w$ as $z_{ws}^{b}$.\\
+(ii)  The quantity of process $s$ assigned to the worker $w$ as $Q_{s_w}$.\\
+(iii) The assignment of worker $w$ to the seru $c$.\\
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\end{document}
