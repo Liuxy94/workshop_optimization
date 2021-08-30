@@ -50,13 +50,13 @@ In this paper, we propose a way to model and optimize the cost of production wor
 Given a batch of order $b$, it will contain the size of this batch, a set of production process $S_b = \{s_{b_1}, s_{b_2}, \ldots, s_{b_n}\}$ and each prosess has an according standard processing time $t_{bs}$. Thus, given a set of $b$ as $\mathcal{B}$, we can obtain a set of all the production process $S_b$ as $\mathcal{S}=\bigcup\limits_{b\in\mathcal{B}} S_b = \{s_{1}, s_{2}, \ldots, s_{n}\}$.
 
 The first task is to assign these process to the workers fairly. For worker $w$, he/she can be described with parameters that\\
-(i)   The ability to complete the production process $s_i \in \mathcal{S}$ as $e_{ws}$.\\
-(ii)  The proficiency in completing the production process $s_i \in \mathcal{S}$ as $f_{ws}$.\\
+(i)   The ability to complete the production process $s_i \in \mathcal{S}$ as $e_{s_w}$.\\
+(ii)  The proficiency in completing the production process $s_i \in \mathcal{S}$ as $f_{s_w}$.\\
 (iii) The limitation of the number of assigned production process as $M$.\\
 
 If we denote the production process set of worker $w$ as $S_w = \{s_{w_1}, s_{w_2}, \ldots, s_{w_n}\}$ and the according quantity as $Q_{s_w}$, then the total time cost will be
 \begin{equation}\label{cost_w}
-    T_w = \sum_{s_w\in S_w} Q_{s_w}*f_{ws}*t_{s_w},
+    T_w = \sum_{s_w\in S_w} Q_{s_w}*f_{s_w}*t_{s_w},
 \end{equation}
 subject to 
 \begin{equation}\label{subject_w}
@@ -87,9 +87,28 @@ And the total labor time will be
 \end{equation}
 \subsection{Integer Programming}
 Follow previous definition, we have three variables that\\
-(i)   The assignment of process $s$ from the batch $b$ to the worker $w$ as $z_{ws}^{b}$.\\
-(ii)  The quantity of process $s$ assigned to the worker $w$ as $Q_{s_w}$.\\
-(iii) The assignment of worker $w$ to the seru $c$.\\
+(i)   The assignment of process $s$ from the batch $b$ to the worker $w$ as a $0-1$ variable $z_{s_w}^{b}$.\\
+(ii)  The quantity of process $s$ assigned to the worker $w$ as an integer variable $Q_{s_w}$.\\
+(iii) The assignment of worker $w$ to the seru $c$ as a $0-1$ variable $x_{w_c}$.\\
+And the first step optimization will be rewriten as
+\begin{equation}\label{opt_1st}
+    \min\max_{w\in\mathcal{W}}\sum_{s_w\in S_w}z_{s_w}^{b}Q_{s_w}*f_{s_w}*t^{b}_{s_w},
+\end{equation}
+subjects to
+\begin{eqnarray}\label{subjects_1st}
+    &&z^{b}_{s_w}\leq e_{s_w},\\
+    &&\sum_{s_w\in S_w} Q_{s_w} \leq M,\\
+    &&\sum_{w\in\mathcal{W}}Q_{s_w} = \sum_{b\in\mathcal{B}}n_{bs}.
+\end{eqnarray}
+And the second step optimization will be rewriten as
+\begin{equation}\label{opt_2nd}
+    \min\sum_{c\in \mathcal{C}}\sum_{w_c\in W_c}x_{w_c}\sum_{s_w\in S_w}z_{s_w}^{b}Q_{s_w}*f_{s_w}*t^{b}_{s_w},
+\end{equation}
+subjects to
+\begin{eqnarray}\label{subjects}
+    &&\sum_{w_c\in W_c} x_{w_c}\leq N,\\
+    &&\sum_{c\in C} x_{w_c} = 1.
+\end{eqnarray}
 
 \bibliographystyle{plain}
 \bibliography{reference}
